@@ -1,20 +1,19 @@
+import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { AuthScreen } from './src/screens/AuthScreen';
+import { WelcomeScreen } from './src/screens/WelcomeScreen';
 
 export default function App() {
+  const [identifier, setIdentifier] = useState<string | null>(null);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
+    <>
+      {identifier ? (
+        <WelcomeScreen identifier={identifier} onLogout={() => setIdentifier(null)} />
+      ) : (
+        <AuthScreen onAuthenticated={setIdentifier} />
+      )}
       <StatusBar style="auto" />
-    </View>
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
