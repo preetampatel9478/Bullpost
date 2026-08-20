@@ -1,5 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View, useColorScheme } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { darkColors, lightColors } from '../theme/colors';
 
 type Props = {
@@ -7,20 +8,18 @@ type Props = {
   onLogout: () => void;
 };
 
-/**
- * Placeholder landing spot after a successful sign in / sign up.
- * The real trader feed hasn't been ported to mobile yet — this just
- * proves the auth flow works end to end.
- */
-export function WelcomeScreen({ identifier, onLogout }: Props) {
+export function ProfileScreen({ identifier, onLogout }: Props) {
   const scheme = useColorScheme();
   const colors = scheme === 'dark' ? darkColors : lightColors;
 
   return (
     <View style={[styles.container, { backgroundColor: colors.gradientBottom }]}>
-      <Text style={[styles.title, { color: colors.textPrimary }]}>Welcome, {identifier} 👋</Text>
+      <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
+        <Feather name="user" size={28} color="#fff" />
+      </View>
+      <Text style={[styles.name, { color: colors.textPrimary }]}>@{identifier}</Text>
       <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-        You're signed in to Bullpost. The trader feed isn't wired up on mobile yet.
+        Profile details, trade history, and settings will live here.
       </Text>
       <Pressable style={[styles.logoutBtn, { backgroundColor: colors.primary }]} onPress={onLogout}>
         <Text style={styles.logoutText}>Log out</Text>
@@ -30,9 +29,17 @@ export function WelcomeScreen({ identifier, onLogout }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24, gap: 12 },
-  title: { fontSize: 22, fontWeight: '800' },
-  subtitle: { fontSize: 13, textAlign: 'center', maxWidth: 280 },
+  container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24, gap: 10 },
+  avatar: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 6,
+  },
+  name: { fontSize: 18, fontWeight: '800' },
+  subtitle: { fontSize: 13, textAlign: 'center', maxWidth: 260, marginBottom: 8 },
   logoutBtn: { marginTop: 12, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 999 },
   logoutText: { color: '#fff', fontWeight: '800', fontSize: 13 },
 });

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
+import { NavigationContainer } from '@react-navigation/native';
 import { AuthScreen } from './src/screens/AuthScreen';
-import { WelcomeScreen } from './src/screens/WelcomeScreen';
+import { MainTabs } from './src/navigation/MainTabs';
 
 export default function App() {
   const [identifier, setIdentifier] = useState<string | null>(null);
@@ -9,7 +10,9 @@ export default function App() {
   return (
     <>
       {identifier ? (
-        <WelcomeScreen identifier={identifier} onLogout={() => setIdentifier(null)} />
+        <NavigationContainer>
+          <MainTabs identifier={identifier} onLogout={() => setIdentifier(null)} />
+        </NavigationContainer>
       ) : (
         <AuthScreen onAuthenticated={setIdentifier} />
       )}
