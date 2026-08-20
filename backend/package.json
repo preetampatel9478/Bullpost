@@ -1,0 +1,6 @@
+{
+  "name": "bullpost-backend",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Backend/API service for Bullpost (not yet implemented)"
+}
