@@ -31,28 +31,28 @@
   --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   
-  --glass-bg: rgba(255, 255, 255, 0.92);
-  --glass-border: 1px solid rgba(226, 232, 240, 0.8);
+  --glass-bg: rgba(255, 255, 255, 0.94);
+  --glass-border: 1px solid rgba(226, 232, 240, 0.9);
   --glass-blur: blur(16px);
   --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 4px 10px -2px rgba(0, 0, 0, 0.02);
 }
 
-.dark-theme {
-  --bg-page: #070a11;
-  --bg-card: #0e1524;
-  --bg-card-hover: #131c30;
-  --bg-card-secondary: #131c30;
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-glow: rgba(37, 99, 235, 0.25);
+.dark-theme, .dark {
+  --bg-page: #090D16;
+  --bg-card: #111827;
+  --bg-card-hover: #182234;
+  --bg-card-secondary: #1E293B;
+  --border-color: #1F2937;
+  --border-glow: rgba(37, 99, 235, 0.35);
   
   --color-primary: #3B82F6;
   --color-primary-hover: #2563EB;
-  --color-primary-light: rgba(37, 99, 235, 0.15);
+  --color-primary-light: rgba(37, 99, 235, 0.2);
   
   --color-bullish: #10B981;
-  --color-bullish-bg: rgba(16, 185, 129, 0.15);
+  --color-bullish-bg: rgba(16, 185, 129, 0.18);
   --color-bearish: #EF4444;
-  --color-bearish-bg: rgba(239, 68, 68, 0.15);
+  --color-bearish-bg: rgba(239, 68, 68, 0.18);
   
   --color-accent: #3B82F6;
   --color-warning: #F59E0B;
@@ -61,10 +61,10 @@
   --text-secondary: #94A3B8;
   --text-muted: #64748B;
   
-  --glass-bg: rgba(14, 21, 36, 0.88);
+  --glass-bg: rgba(17, 24, 39, 0.92);
   --glass-border: 1px solid rgba(255, 255, 255, 0.08);
   --glass-blur: blur(16px);
-  --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+  --card-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.6);
 }
 
 * {
@@ -79,7 +79,7 @@ html, body {
   width: 100%;
   background-color: var(--bg-page);
   color: var(--text-primary);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.25s ease, color 0.25s ease;
   font-family: var(--font-main);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -122,13 +122,13 @@ body {
 .badge-bullish {
   background: var(--color-bullish-bg);
   color: var(--color-bullish);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.25);
 }
 
 .badge-bearish {
   background: var(--color-bearish-bg);
   color: var(--color-bearish);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.25);
 }
 
 /* Glassmorphism & Card Styles */
@@ -147,8 +147,18 @@ body {
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.dark .glass-card, .dark-theme .glass-card {
+  background-color: #111827;
+  border-color: #1F2937;
+}
+
 .glass-card:hover {
   box-shadow: 0 15px 35px -5px rgba(37, 99, 235, 0.06), 0 5px 15px -3px rgba(0, 0, 0, 0.03);
+}
+
+.dark .glass-card:hover, .dark-theme .glass-card:hover {
+  border-color: #374151;
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.7);
 }
 
 /* Marquee Ticker */
@@ -185,8 +195,8 @@ body {
   overflow: hidden;
 }
 
-.dark-theme .pnl-proof-card {
-  background: linear-gradient(135deg, #071912 0%, #0e1524 100%);
+.dark .pnl-proof-card, .dark-theme .pnl-proof-card {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, #111827 100%);
   border-color: rgba(16, 185, 129, 0.3);
 }
 
@@ -195,8 +205,8 @@ body {
   border-color: rgba(239, 68, 68, 0.25);
 }
 
-.dark-theme .pnl-proof-card.loss {
-  background: linear-gradient(135deg, #1c0f13 0%, #0e1524 100%);
+.dark .pnl-proof-card.loss, .dark-theme .pnl-proof-card.loss {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, #111827 100%);
   border-color: rgba(239, 68, 68, 0.3);
 }
 
@@ -211,11 +221,15 @@ body {
   pointer-events: none;
 }
 
+.dark .pnl-watermark, .dark-theme .pnl-watermark {
+  opacity: 0.05;
+}
+
 /* Modal Overlay */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.4);
+  background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   z-index: 1000;

@@ -4,7 +4,6 @@ import {
   Flame, 
   TrendingUp, 
   TrendingDown, 
-  Hash, 
   Trophy, 
   ArrowUpRight, 
   ArrowDownRight,
@@ -29,14 +28,14 @@ export const TrendingSection: React.FC = () => {
     <div className="space-y-6 animate-fadeIn">
       
       {/* 1. Market Sentiment Overview Meter */}
-      <div className="glass-card p-6 border border-blue-100 dark:border-white/10 relative overflow-hidden">
+      <div className="glass-card p-6 border border-blue-100 dark:border-slate-800 relative overflow-hidden">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
           <div>
             <div className="flex items-center gap-2 text-xs font-bold uppercase text-[#2563EB] dark:text-[#60A5FA] tracking-wider mb-1">
-              <Sparkles className="w-4 h-4 text-[#2563EB]" /> Live Market Sentiment
+              <Sparkles className="w-4 h-4 text-[#2563EB] dark:text-[#60A5FA]" /> Live Market Sentiment
             </div>
             <h2 className="text-2xl font-black text-slate-900 dark:text-white">76% Bullish Outlook</h2>
-            <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">Based on 28,400+ verified trader callouts & analysis in the last 24h.</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Based on 28,400+ verified trader callouts & analysis in the last 24h.</p>
           </div>
 
           {/* Sentiment Meter Bar */}
@@ -49,7 +48,7 @@ export const TrendingSection: React.FC = () => {
                 24% BEARS <TrendingDown className="w-3.5 h-3.5" />
               </span>
             </div>
-            <div className="h-3 w-full bg-slate-100 dark:bg-gray-800 rounded-full overflow-hidden flex p-0.5 border border-slate-200 dark:border-white/10">
+            <div className="h-3 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex p-0.5 border border-slate-200 dark:border-slate-700">
               <div className="bg-[#10B981] h-full rounded-l-full" style={{ width: '76%' }} />
               <div className="bg-[#EF4444] h-full rounded-r-full" style={{ width: '24%' }} />
             </div>
@@ -58,11 +57,11 @@ export const TrendingSection: React.FC = () => {
       </div>
 
       {/* 2. Top Trending Hashtags */}
-      <div className="glass-card p-6 space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/10 pb-3">
+      <div className="glass-card p-6 space-y-4 border border-slate-200/80 dark:border-slate-800">
+        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
           <div className="flex items-center gap-2">
-            <Flame className="w-5 h-5 text-[#2563EB]" />
-            <h3 className="font-extrabold text-base text-slate-900 dark:text-gray-100">Trending Topics & Setups</h3>
+            <Flame className="w-5 h-5 text-[#2563EB] dark:text-[#60A5FA]" />
+            <h3 className="font-extrabold text-base text-slate-900 dark:text-white">Trending Topics & Setups</h3>
           </div>
           {filterHashtag && (
             <button
@@ -84,8 +83,8 @@ export const TrendingSection: React.FC = () => {
               }}
               className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
                 filterHashtag === topic.tag
-                  ? 'border-[#2563EB] bg-blue-50/70 dark:bg-blue-600/20'
-                  : 'border-slate-200/80 dark:border-white/10 bg-[#F8FAFC] dark:bg-white/5 hover:border-slate-300'
+                  ? 'border-[#2563EB] dark:border-blue-500/40 bg-blue-50/70 dark:bg-blue-600/20'
+                  : 'border-slate-200/80 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#1E293B] hover:border-slate-300 dark:hover:border-slate-700'
               }`}
             >
               <div>
@@ -98,7 +97,7 @@ export const TrendingSection: React.FC = () => {
                     </span>
                   )}
                 </div>
-                <div className="text-xs text-slate-500 dark:text-gray-400 mt-1 font-medium">{topic.postsCount.toLocaleString()} trader posts</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">{topic.postsCount.toLocaleString()} trader posts</div>
               </div>
 
               {topic.associatedStockSymbol && (
@@ -107,7 +106,7 @@ export const TrendingSection: React.FC = () => {
                     e.stopPropagation();
                     openStockModal(topic.associatedStockSymbol!);
                   }}
-                  className="px-3 py-1 rounded-full bg-white dark:bg-[#131c30] border border-slate-200 dark:border-white/10 text-xs font-mono font-bold text-slate-800 dark:text-gray-200 hover:border-[#2563EB] transition-colors shadow-2xs"
+                  className="px-3 py-1 rounded-full bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-700 text-xs font-mono font-bold text-slate-800 dark:text-slate-200 hover:border-[#2563EB] dark:hover:border-[#60A5FA] transition-colors shadow-2xs"
                 >
                   ${topic.associatedStockSymbol}
                 </button>
@@ -118,11 +117,11 @@ export const TrendingSection: React.FC = () => {
       </div>
 
       {/* 3. Top Trending Stocks Grid */}
-      <div className="glass-card p-6 space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/10 pb-3">
+      <div className="glass-card p-6 space-y-4 border border-slate-200/80 dark:border-slate-800">
+        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
           <div className="flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-[#2563EB]" />
-            <h3 className="font-extrabold text-base text-slate-900 dark:text-gray-100">Top Tagged Stocks Right Now</h3>
+            <TrendingUp className="w-5 h-5 text-[#2563EB] dark:text-[#60A5FA]" />
+            <h3 className="font-extrabold text-base text-slate-900 dark:text-white">Top Tagged Stocks Right Now</h3>
           </div>
         </div>
 
@@ -131,19 +130,19 @@ export const TrendingSection: React.FC = () => {
             <div
               key={stock.symbol}
               onClick={() => openStockModal(stock.symbol)}
-              className="p-4.5 rounded-2xl bg-[#F8FAFC] dark:bg-[#131c30] border border-slate-200/80 dark:border-white/10 hover:border-[#2563EB] transition-all cursor-pointer flex items-center justify-between group shadow-xs"
+              className="p-4.5 rounded-2xl bg-[#F8FAFC] dark:bg-[#1E293B] border border-slate-200/80 dark:border-slate-800 hover:border-[#2563EB] dark:hover:border-slate-700 transition-all cursor-pointer flex items-center justify-between group shadow-xs"
             >
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-black text-lg text-slate-900 dark:text-white font-mono group-hover:text-[#2563EB] transition-colors">
+                  <span className="font-black text-lg text-slate-900 dark:text-white font-mono group-hover:text-[#2563EB] dark:group-hover:text-[#60A5FA] transition-colors">
                     ${stock.symbol}
                   </span>
-                  <span className="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-blue-100 text-[#2563EB] dark:bg-blue-900/30 dark:text-blue-300 font-mono">
+                  <span className="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-blue-100 dark:bg-blue-900/30 text-[#2563EB] dark:text-blue-300 font-mono">
                     #{stock.trendingRank} Hot
                   </span>
                 </div>
-                <div className="text-xs text-slate-500 dark:text-gray-400 font-medium">{stock.name}</div>
-                <div className="text-xs text-slate-400 flex items-center gap-2 font-mono pt-1">
+                <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">{stock.name}</div>
+                <div className="text-xs text-slate-400 dark:text-slate-400 flex items-center gap-2 font-mono pt-1">
                   <span>Vol: {stock.volume}</span>
                   <span>•</span>
                   <span className="text-emerald-600 dark:text-emerald-400 font-bold">{stock.bullishPercentage}% Bullish</span>
@@ -164,10 +163,10 @@ export const TrendingSection: React.FC = () => {
       </div>
 
       {/* 4. Top Trader Leaderboard */}
-      <div className="glass-card p-6 space-y-4">
-        <div className="flex items-center gap-2 border-b border-slate-100 dark:border-white/10 pb-3">
-          <Trophy className="w-5 h-5 text-[#2563EB]" />
-          <h3 className="font-extrabold text-base text-slate-900 dark:text-gray-100">Top Verified Traders Leaderboard</h3>
+      <div className="glass-card p-6 space-y-4 border border-slate-200/80 dark:border-slate-800">
+        <div className="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+          <Trophy className="w-5 h-5 text-[#2563EB] dark:text-[#60A5FA]" />
+          <h3 className="font-extrabold text-base text-slate-900 dark:text-white">Top Verified Traders Leaderboard</h3>
         </div>
 
         <div className="space-y-2.5">
@@ -175,17 +174,17 @@ export const TrendingSection: React.FC = () => {
             <div
               key={trader.id}
               onClick={() => viewUserProfile(trader)}
-              className="p-3.5 rounded-2xl bg-[#F8FAFC] dark:bg-white/5 border border-slate-200/80 dark:border-white/5 hover:border-slate-300 transition-colors flex items-center justify-between cursor-pointer shadow-2xs"
+              className="p-3.5 rounded-2xl bg-[#F8FAFC] dark:bg-[#1E293B] border border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-colors flex items-center justify-between cursor-pointer shadow-2xs"
             >
               <div className="flex items-center gap-3">
                 <span className="w-6 text-center font-mono font-black text-[#2563EB] dark:text-[#60A5FA] text-sm">
                   #{idx + 1}
                 </span>
-                <img src={trader.avatar} alt="" className="w-10 h-10 rounded-full object-cover border border-slate-200 shadow-2xs" />
+                <img src={trader.avatar} alt="" className="w-10 h-10 rounded-full object-cover border border-slate-200 dark:border-slate-700 shadow-2xs" />
                 <div>
-                  <div className="flex items-center gap-1.5 font-bold text-sm text-slate-900 dark:text-gray-200">
+                  <div className="flex items-center gap-1.5 font-bold text-sm text-slate-900 dark:text-white">
                     {trader.name}
-                    {trader.verified && <span className="text-[#2563EB] text-xs">✓</span>}
+                    {trader.verified && <span className="text-[#2563EB] dark:text-[#60A5FA] text-xs">✓</span>}
                   </div>
                   <div className="text-xs text-slate-400 font-mono">@{trader.username}</div>
                 </div>

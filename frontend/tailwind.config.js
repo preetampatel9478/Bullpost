@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -7,15 +8,18 @@ export default {
   theme: {
     extend: {
       colors: {
-        bullish: '#00E676',
-        bearish: '#FF3B30',
-        cyanAccent: '#00F2FE',
-        darkBg: '#070a11',
-        cardBg: '#0e1524',
-        cardHover: '#162035',
+        bullish: '#10B981',
+        bearish: '#EF4444',
+        brandBlue: '#2563EB',
+        brandBlueHover: '#1D4ED8',
+        brandBlueLight: '#EFF6FF',
+        darkBg: '#090D16',
+        darkCard: '#111827',
+        darkCardHover: '#172033',
+        darkCardInner: '#1E293B',
       },
       fontFamily: {
-        sans: ['Outfit', 'sans-serif'],
+        sans: ['Plus Jakarta Sans', 'Outfit', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       }
     },
