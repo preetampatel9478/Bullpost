@@ -77,28 +77,6 @@ const MainFeed: React.FC = () => {
           </button>
         </div>
 
-        {/* Feed Category Filter Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-bold scrollbar-none">
-          {[
-            { id: 'all', label: '🔥 All Posts' },
-            { id: 'pnl', label: '💰 Realized P&L' },
-            { id: 'callout', label: '🚀 Stock Callouts' },
-            { id: 'gap_analysis', label: '📊 Gap Analysis' },
-            { id: 'following', label: '👥 Following' },
-          ].map(f => (
-            <button
-              key={f.id}
-              onClick={() => { setFeedType(f.id as any); setFilterHashtag(null); }}
-              className={`px-4 py-2 rounded-full border transition-all whitespace-nowrap ${
-                feedType === f.id && !filterHashtag
-                  ? 'bg-blue-50 dark:bg-blue-600/20 border-[#2563EB] dark:border-blue-500/40 text-[#2563EB] dark:text-[#60A5FA] font-black shadow-2xs'
-                  : 'bg-white dark:bg-[#111827] border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-slate-700'
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
 
         {/* Active Hashtag Filter Banner */}
         {filterHashtag && (
