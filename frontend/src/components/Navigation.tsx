@@ -35,9 +35,9 @@ export const Navigation: React.FC = () => {
   return (
     <>
       {/* Desktop Sidebar Navigation */}
-      <aside className="hidden lg:block w-64 shrink-0 space-y-6 sticky top-24 h-[calc(100vh-6rem)] overflow-y-auto pr-2">
+      <aside className="hidden lg:block w-64 shrink-0 space-y-5 sticky top-24 h-[calc(100vh-6rem)] overflow-y-auto pr-1">
         
-        {/* Main Nav Links */}
+        {/* Main Nav Links Card */}
         <div className="glass-card p-3 space-y-1">
           {desktopNavItems.map((item) => {
             const Icon = item.icon;
@@ -53,23 +53,23 @@ export const Navigation: React.FC = () => {
                     if (item.id === 'home') setFilterHashtag(null);
                   }
                 }}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm transition-all ${
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl font-medium text-sm transition-all ${
                   isActive
-                    ? 'bg-gradient-to-r from-emerald-500/15 to-transparent text-[#059669] dark:text-[#00E676] border-l-4 border-[#059669] dark:border-[#00E676] font-bold shadow-sm'
-                    : 'text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5'
+                    ? 'bg-blue-50 dark:bg-blue-600/15 text-[#2563EB] dark:text-[#60A5FA] font-bold shadow-xs'
+                    : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/5'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Icon className={`w-5 h-5 ${isActive ? 'text-[#059669] dark:text-[#00E676]' : 'text-gray-400'}`} />
+                  <Icon className={`w-5 h-5 ${isActive ? 'text-[#2563EB] dark:text-[#60A5FA]' : 'text-slate-400'}`} />
                   <span>{item.label}</span>
                 </div>
                 {item.badge && (
-                  <span className="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 animate-pulse">
+                  <span className="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-blue-100 text-[#2563EB] dark:bg-blue-900/40 dark:text-blue-300">
                     {item.badge}
                   </span>
                 )}
                 {item.count ? (
-                  <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-bullish text-white dark:text-[#070a11]">
+                  <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-[#2563EB] text-white shadow-xs">
                     {item.count}
                   </span>
                 ) : null}
@@ -79,46 +79,48 @@ export const Navigation: React.FC = () => {
         </div>
 
         {/* Live Trader P&L Stat Card */}
-        <div className="glass-card p-4 space-y-3 relative overflow-hidden">
-          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-            <span className="font-semibold uppercase tracking-wider flex items-center gap-1">
-              <PieChart className="w-3.5 h-3.5 text-[#0284C7] dark:text-[#00F2FE]" /> Live P&L Stat
+        <div className="glass-card p-5 space-y-3.5 relative overflow-hidden">
+          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-gray-400">
+            <span className="font-bold uppercase tracking-wider flex items-center gap-1.5 text-slate-700 dark:text-gray-300">
+              <PieChart className="w-4 h-4 text-[#2563EB]" /> Live Trader P&L
             </span>
-            <span className="text-[10px] bg-green-500/20 text-green-600 dark:text-green-400 px-1.5 py-0.5 rounded font-mono font-bold">LIVE</span>
+            <span className="text-[10px] bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 px-2 py-0.5 rounded-full font-mono font-bold">
+              LIVE
+            </span>
           </div>
 
           <div className="space-y-1">
-            <span className="text-2xl font-extrabold font-mono text-bullish">
+            <span className="text-2xl font-black font-mono text-emerald-600 dark:text-emerald-400 block">
               +₹{currentUser.totalPnlToday.toLocaleString('en-IN')}
             </span>
-            <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
-              <span>Today Trades: <strong>{currentUser.totalTradesToday}</strong></span>
-              <span>Win Rate: <strong className="text-bullish font-mono">{currentUser.winRate}%</strong></span>
+            <div className="flex justify-between text-xs text-slate-500 dark:text-gray-400 pt-0.5">
+              <span>Today Trades: <strong className="text-slate-800 dark:text-gray-200">{currentUser.totalTradesToday}</strong></span>
+              <span>Win Rate: <strong className="text-emerald-600 dark:text-emerald-400 font-mono">{currentUser.winRate}%</strong></span>
             </div>
           </div>
 
-          <div className="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-1.5 overflow-hidden">
+          <div className="w-full bg-slate-100 dark:bg-gray-800 rounded-full h-2 overflow-hidden">
             <div 
-              className="bg-gradient-to-r from-[#059669] to-[#00E676] h-full rounded-full" 
+              className="bg-gradient-to-r from-[#2563EB] to-[#3B82F6] h-full rounded-full" 
               style={{ width: `${currentUser.winRate}%` }}
             />
           </div>
         </div>
 
-        {/* Compliance / Transparency Card */}
-        <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-800 dark:text-amber-300 space-y-1.5">
-          <div className="flex items-center gap-2 font-bold text-amber-700 dark:text-amber-400">
-            <ShieldCheck className="w-4 h-4 text-amber-500" /> Trader Transparency
+        {/* Transparency Card */}
+        <div className="p-4 rounded-[24px] bg-white dark:bg-[#0e1524] border border-slate-200/80 dark:border-white/10 text-xs text-slate-600 dark:text-gray-300 space-y-1.5 shadow-xs">
+          <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
+            <ShieldCheck className="w-4 h-4 text-[#2563EB]" /> Trader Transparency
           </div>
-          <p className="text-[11px] leading-relaxed opacity-90">
-            All posts include burning disclaimer tags to encourage responsible trading & DYOR research.
+          <p className="text-[11px] leading-relaxed text-slate-500 dark:text-gray-400">
+            Real-time verified P&L proofs with interactive financial disclaimers on all posts.
           </p>
         </div>
 
       </aside>
 
-      {/* Ultra-Clean Floating Glassmorphic Mobile Bottom Navigation Bar (FITS ALL MOBILE SCREENS) */}
-      <nav className="lg:hidden fixed bottom-3 left-2 right-2 z-50 glass-panel rounded-2xl px-1.5 py-1.5 flex items-center justify-between shadow-2xl border border-[var(--border-color)]">
+      {/* Floating Glassmorphic Mobile Bottom Navigation Bar */}
+      <nav className="lg:hidden fixed bottom-3 left-3 right-3 z-50 bg-white/95 dark:bg-[#0e1524]/95 backdrop-blur-md rounded-full px-3 py-2 flex items-center justify-between shadow-[0_12px_30px_rgba(0,0,0,0.1)] border border-slate-200/80 dark:border-white/10">
         
         {/* 1. Feed */}
         <button
@@ -127,13 +129,13 @@ export const Navigation: React.FC = () => {
             setFilterHashtag(null);
           }}
           className={`flex-1 flex flex-col items-center justify-center p-1 rounded-xl text-xs transition-all relative outline-none focus:outline-none ${
-            activeTab === 'home' ? 'text-[#059669] dark:text-[#00E676] font-bold scale-105' : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-gray-200'
+            activeTab === 'home' ? 'text-[#2563EB] dark:text-[#60A5FA] font-bold' : 'text-slate-400 hover:text-slate-700 dark:hover:text-gray-200'
           }`}
         >
           <Home className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px] font-semibold tracking-tight">Feed</span>
+          <span className="text-[10px] font-bold">Feed</span>
           {activeTab === 'home' && (
-            <span className="w-1.5 h-1.5 rounded-full bg-[#059669] dark:bg-[#00E676] shadow-sm absolute -bottom-0.5" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#2563EB] shadow-xs absolute -bottom-1" />
           )}
         </button>
 
@@ -141,40 +143,38 @@ export const Navigation: React.FC = () => {
         <button
           onClick={() => setActiveTab('trending')}
           className={`flex-1 flex flex-col items-center justify-center p-1 rounded-xl text-xs transition-all relative outline-none focus:outline-none ${
-            activeTab === 'trending' ? 'text-[#059669] dark:text-[#00E676] font-bold scale-105' : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-gray-200'
+            activeTab === 'trending' ? 'text-[#2563EB] dark:text-[#60A5FA] font-bold' : 'text-slate-400 hover:text-slate-700 dark:hover:text-gray-200'
           }`}
         >
           <Flame className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px] font-semibold tracking-tight">Trending</span>
+          <span className="text-[10px] font-bold">Trending</span>
           {activeTab === 'trending' && (
-            <span className="w-1.5 h-1.5 rounded-full bg-[#059669] dark:bg-[#00E676] shadow-sm absolute -bottom-0.5" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#2563EB] shadow-xs absolute -bottom-1" />
           )}
         </button>
 
         {/* 3. Central Prominent Floating + Post Action Button */}
         <button
           onClick={() => setIsComposerOpen(true)}
-          className="flex-1 flex flex-col items-center justify-center -mt-5 outline-none focus:outline-none"
+          className="flex-1 flex flex-col items-center justify-center -mt-6 outline-none focus:outline-none"
         >
-          <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-[#059669] to-[#00E676] p-0.5 shadow-lg shadow-[#059669]/30 dark:shadow-[#00E676]/40 flex items-center justify-center active:scale-95 transition-transform">
-            <div className="w-full h-full bg-[#0F172A] dark:bg-[#070a11] rounded-full flex items-center justify-center">
-              <Plus className="w-6 h-6 text-white dark:text-[#00E676]" />
-            </div>
+          <div className="w-12 h-12 rounded-full bg-[#2563EB] hover:bg-[#1D4ED8] p-0.5 shadow-lg shadow-blue-500/30 flex items-center justify-center active:scale-95 transition-transform text-white">
+            <Plus className="w-6 h-6 stroke-[2.5]" />
           </div>
-          <span className="text-[9px] font-bold text-[#059669] dark:text-[#00E676] mt-0.5">Post</span>
+          <span className="text-[9px] font-bold text-[#2563EB] mt-0.5">Post</span>
         </button>
 
         {/* 4. News */}
         <button
           onClick={() => setActiveTab('news')}
           className={`flex-1 flex flex-col items-center justify-center p-1 rounded-xl text-xs transition-all relative outline-none focus:outline-none ${
-            activeTab === 'news' ? 'text-[#059669] dark:text-[#00E676] font-bold scale-105' : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-gray-200'
+            activeTab === 'news' ? 'text-[#2563EB] dark:text-[#60A5FA] font-bold' : 'text-slate-400 hover:text-slate-700 dark:hover:text-gray-200'
           }`}
         >
           <Newspaper className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px] font-semibold tracking-tight">News</span>
+          <span className="text-[10px] font-bold">News</span>
           {activeTab === 'news' && (
-            <span className="w-1.5 h-1.5 rounded-full bg-[#059669] dark:bg-[#00E676] shadow-sm absolute -bottom-0.5" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#2563EB] shadow-xs absolute -bottom-1" />
           )}
         </button>
 
@@ -182,13 +182,13 @@ export const Navigation: React.FC = () => {
         <button
           onClick={() => viewUserProfile(currentUser)}
           className={`flex-1 flex flex-col items-center justify-center p-1 rounded-xl text-xs transition-all relative outline-none focus:outline-none ${
-            activeTab === 'profile' ? 'text-[#059669] dark:text-[#00E676] font-bold scale-105' : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-gray-200'
+            activeTab === 'profile' ? 'text-[#2563EB] dark:text-[#60A5FA] font-bold' : 'text-slate-400 hover:text-slate-700 dark:hover:text-gray-200'
           }`}
         >
           <User className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px] font-semibold tracking-tight">Profile</span>
+          <span className="text-[10px] font-bold">Profile</span>
           {activeTab === 'profile' && (
-            <span className="w-1.5 h-1.5 rounded-full bg-[#059669] dark:bg-[#00E676] shadow-sm absolute -bottom-0.5" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#2563EB] shadow-xs absolute -bottom-1" />
           )}
         </button>
 
