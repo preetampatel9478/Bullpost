@@ -7,8 +7,10 @@ import {
   Pressable,
   Image,
   useColorScheme,
-  SafeAreaView,
+  Platform,
+  StatusBar as RNStatusBar,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { darkColors, lightColors } from '../theme/colors';
 
@@ -48,14 +50,16 @@ const NEWS_DATA = [
 export function NewsScreen() {
   const scheme = useColorScheme();
   const colors = scheme === 'dark' ? darkColors : lightColors;
+  const insets = useSafeAreaInsets();
   const [filter, setFilter] = useState<'ALL' | 'BULLISH' | 'BEARISH'>('ALL');
 
+  const topPadding = Math.max(insets.top, Platform.OS === 'android' ? (RNStatusBar.currentHeight || 24) : 0) + 8;
   const filteredNews = NEWS_DATA.filter(n => (filter === 'ALL' ? true : n.sentiment === filter));
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.gradientBottom }]}>
-      {/* Header */}
-      <View style={[styles.header, { backgroundColor: colors.card, borderBottomColor: colors.cardBorder }]}>
+    <View style={[styles.container, { backgroundColor: colors.gradientBottom }]}>
+      {/* Header with notch padding */}
+      <View style={[styles.header, { backgroundColor: colors.card, borderBottomColor: colors.cardBorder, paddingTop: topPadding }]}>
         <Text style={[styles.title, { color: colors.textPrimary }]}>Market News</Text>
         <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Live market triggers & headlines</Text>
 
@@ -125,7 +129,7 @@ export function NewsScreen() {
           </View>
         ))}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -135,7 +139,6 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 16,
-    paddingTop: 14,
     paddingBottom: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
     gap: 4,

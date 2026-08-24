@@ -7,9 +7,11 @@ import {
   Pressable,
   Image,
   useColorScheme,
-  SafeAreaView,
+  Platform,
+  StatusBar as RNStatusBar,
 } from 'react-native';
-import { Feather, Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { darkColors, lightColors } from '../theme/colors';
 
@@ -21,15 +23,21 @@ type Props = {
 export function ProfileScreen({ identifier, onLogout }: Props) {
   const scheme = useColorScheme();
   const colors = scheme === 'dark' ? darkColors : lightColors;
+  const insets = useSafeAreaInsets();
+
+  const topPadding = Math.max(insets.top, Platform.OS === 'android' ? (RNStatusBar.currentHeight || 24) : 0) + 8;
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.gradientBottom }]}>
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+    <View style={[styles.container, { backgroundColor: colors.gradientBottom }]}>
+      <ScrollView 
+        contentContainerStyle={[styles.scrollContent, { paddingTop: topPadding }]} 
+        showsVerticalScrollIndicator={false}
+      >
         {/* Profile Card Banner */}
         <View style={[styles.profileCard, { backgroundColor: colors.card, borderColor: colors.cardBorder }]}>
           {/* Top Gradient Banner */}
           <LinearGradient
-            colors={['rgba(37,99,235,0.3)', 'rgba(96,165,250,0.15)']}
+            colors={['rgba(37,99,235,0.25)', 'rgba(96,165,250,0.12)']}
             style={styles.bannerGradient}
           />
 
@@ -55,26 +63,26 @@ export function ProfileScreen({ identifier, onLogout }: Props) {
             Active Equity & Options Trader on Bullpost. Tracking momentum breakouts, gap analysis & sharing verified P&L setups. 📈🚀
           </Text>
 
-          {/* Stats Grid */}
+          {/* Stats Grid - Fixed width and no wrapping */}
           <View style={styles.statsGrid}>
             <View style={[styles.statBox, { backgroundColor: colors.inputBg, borderColor: colors.cardBorder }]}>
-              <Text style={[styles.statLabel, { color: colors.textSecondary }]}>WIN RATE</Text>
-              <Text style={[styles.statVal, { color: '#059669' }]}>+78%</Text>
+              <Text numberOfLines={1} style={[styles.statLabel, { color: colors.textSecondary }]}>WIN RATE</Text>
+              <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.statVal, { color: '#059669' }]}>+78%</Text>
             </View>
 
             <View style={[styles.statBox, { backgroundColor: colors.inputBg, borderColor: colors.cardBorder }]}>
-              <Text style={[styles.statLabel, { color: colors.textSecondary }]}>TODAY P&L</Text>
-              <Text style={[styles.statVal, { color: '#059669' }]}>+₹24,500</Text>
+              <Text numberOfLines={1} style={[styles.statLabel, { color: colors.textSecondary }]}>TODAY P&L</Text>
+              <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.statVal, { color: '#059669' }]}>+₹24.5K</Text>
             </View>
 
             <View style={[styles.statBox, { backgroundColor: colors.inputBg, borderColor: colors.cardBorder }]}>
-              <Text style={[styles.statLabel, { color: colors.textSecondary }]}>FOLLOWERS</Text>
-              <Text style={[styles.statVal, { color: colors.textPrimary }]}>1,420</Text>
+              <Text numberOfLines={1} style={[styles.statLabel, { color: colors.textSecondary }]}>FOLLOWERS</Text>
+              <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.statVal, { color: colors.textPrimary }]}>1,420</Text>
             </View>
 
             <View style={[styles.statBox, { backgroundColor: colors.inputBg, borderColor: colors.cardBorder }]}>
-              <Text style={[styles.statLabel, { color: colors.textSecondary }]}>FOLLOWING</Text>
-              <Text style={[styles.statVal, { color: colors.textPrimary }]}>48</Text>
+              <Text numberOfLines={1} style={[styles.statLabel, { color: colors.textSecondary }]}>FOLLOWING</Text>
+              <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.statVal, { color: colors.textPrimary }]}>48</Text>
             </View>
           </View>
         </View>
@@ -106,7 +114,7 @@ export function ProfileScreen({ identifier, onLogout }: Props) {
           <Text style={styles.logoutText}>Sign Out of Bullpost</Text>
         </Pressable>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -115,7 +123,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    padding: 16,
+    paddingHorizontal: 16,
     gap: 16,
     paddingBottom: 40,
   },
@@ -135,18 +143,18 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: 80,
+    height: 75,
   },
   avatarRow: {
     flexDirection: 'row',
     alignItems: 'flex-end',
     gap: 12,
-    marginTop: 24,
+    marginTop: 20,
   },
   avatar: {
-    width: 68,
-    height: 68,
-    borderRadius: 34,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     borderWidth: 3,
   },
   headerInfo: {
@@ -181,24 +189,28 @@ const styles = StyleSheet.create({
   },
   statsGrid: {
     flexDirection: 'row',
-    gap: 8,
+    gap: 6,
     justifyContent: 'space-between',
   },
   statBox: {
     flex: 1,
-    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 4,
     borderRadius: 16,
     borderWidth: 1,
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 2,
   },
   statLabel: {
     fontSize: 8,
     fontWeight: '800',
+    textAlign: 'center',
   },
   statVal: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '900',
+    textAlign: 'center',
   },
   sectionCard: {
     borderRadius: 24,

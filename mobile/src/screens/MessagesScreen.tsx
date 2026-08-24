@@ -7,8 +7,10 @@ import {
   Image,
   Pressable,
   useColorScheme,
-  SafeAreaView,
+  Platform,
+  StatusBar as RNStatusBar,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { darkColors, lightColors } from '../theme/colors';
 
@@ -51,11 +53,14 @@ const CONVERSATIONS = [
 export function MessagesScreen() {
   const scheme = useColorScheme();
   const colors = scheme === 'dark' ? darkColors : lightColors;
+  const insets = useSafeAreaInsets();
+
+  const topPadding = Math.max(insets.top, Platform.OS === 'android' ? (RNStatusBar.currentHeight || 24) : 0) + 8;
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.gradientBottom }]}>
-      {/* Header */}
-      <View style={[styles.header, { backgroundColor: colors.card, borderBottomColor: colors.cardBorder }]}>
+    <View style={[styles.container, { backgroundColor: colors.gradientBottom }]}>
+      {/* Header with notch padding */}
+      <View style={[styles.header, { backgroundColor: colors.card, borderBottomColor: colors.cardBorder, paddingTop: topPadding }]}>
         <Text style={[styles.title, { color: colors.textPrimary }]}>Trader Messages</Text>
         <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Private trade discussions & setups</Text>
       </View>
@@ -99,7 +104,7 @@ export function MessagesScreen() {
           ))}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -109,7 +114,6 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 16,
-    paddingTop: 14,
     paddingBottom: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
     gap: 4,

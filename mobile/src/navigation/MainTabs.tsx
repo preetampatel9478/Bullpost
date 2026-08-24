@@ -1,6 +1,7 @@
 import React from 'react';
-import { useColorScheme } from 'react-native';
+import { useColorScheme, Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { darkColors, lightColors } from '../theme/colors';
 import { HomeScreen } from '../screens/HomeScreen';
@@ -29,6 +30,9 @@ type Props = {
 export function MainTabs({ identifier, onLogout }: Props) {
   const scheme = useColorScheme();
   const colors = scheme === 'dark' ? darkColors : lightColors;
+  const insets = useSafeAreaInsets();
+
+  const bottomInset = Math.max(insets.bottom, Platform.OS === 'android' ? 8 : 4);
 
   return (
     <Tab.Navigator
@@ -39,8 +43,8 @@ export function MainTabs({ identifier, onLogout }: Props) {
         tabBarStyle: {
           backgroundColor: colors.card,
           borderTopColor: colors.cardBorder,
-          height: 60,
-          paddingBottom: 8,
+          height: 54 + bottomInset,
+          paddingBottom: bottomInset,
           paddingTop: 6,
         },
         tabBarLabelStyle: { fontSize: 11, fontWeight: '700' },

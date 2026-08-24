@@ -9,12 +9,14 @@ import {
   TextInput,
   Modal,
   useColorScheme,
-  SafeAreaView,
   Alert,
+  Platform,
+  StatusBar as RNStatusBar,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { darkColors, lightColors, ThemeColors } from '../theme/colors';
+import { darkColors, lightColors } from '../theme/colors';
 
 type Post = {
   id: string;
@@ -110,11 +112,14 @@ const INITIAL_POSTS: Post[] = [
 export function HomeScreen() {
   const scheme = useColorScheme();
   const colors = scheme === 'dark' ? darkColors : lightColors;
+  const insets = useSafeAreaInsets();
 
   const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
   const [isComposerVisible, setIsComposerVisible] = useState(false);
   const [newPostContent, setNewPostContent] = useState('');
   const [newStockSymbol, setNewStockSymbol] = useState('VEDL');
+
+  const topPadding = Math.max(insets.top, Platform.OS === 'android' ? (RNStatusBar.currentHeight || 24) : 0) + 6;
 
   const toggleLike = (id: string) => {
     setPosts(prev =>
@@ -173,9 +178,18 @@ export function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.gradientBottom }]}>
-      {/* Top App Header */}
-      <View style={[styles.header, { backgroundColor: colors.card, borderBottomColor: colors.cardBorder }]}>
+    <View style={[styles.container, { backgroundColor: colors.gradientBottom }]}>
+      {/* Top App Header with proper notch/status bar spacing */}
+      <View
+        style={[
+          styles.header,
+          {
+            backgroundColor: colors.card,
+            borderBottomColor: colors.cardBorder,
+            paddingTop: topPadding,
+          },
+        ]}
+      >
         <View style={styles.brandRow}>
           <LinearGradient colors={['#2563EB', '#3B82F6']} style={styles.logoBadge}>
             <Feather name="trending-up" size={16} color="#fff" />
@@ -425,7 +439,7 @@ export function HomeScreen() {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -438,7 +452,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingBottom: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   brandRow: {

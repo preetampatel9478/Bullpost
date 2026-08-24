@@ -8,8 +8,10 @@ import {
   Pressable,
   Image,
   useColorScheme,
-  SafeAreaView,
+  Platform,
+  StatusBar as RNStatusBar,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { darkColors, lightColors } from '../theme/colors';
 
@@ -39,7 +41,10 @@ const TRADERS = [
 export function SearchScreen() {
   const scheme = useColorScheme();
   const colors = scheme === 'dark' ? darkColors : lightColors;
+  const insets = useSafeAreaInsets();
   const [query, setQuery] = useState('');
+
+  const topPadding = Math.max(insets.top, Platform.OS === 'android' ? (RNStatusBar.currentHeight || 24) : 0) + 8;
 
   const filteredStocks = STOCKS.filter(s =>
     s.symbol.toLowerCase().includes(query.toLowerCase()) || s.name.toLowerCase().includes(query.toLowerCase())
@@ -50,9 +55,9 @@ export function SearchScreen() {
   );
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.gradientBottom }]}>
-      {/* Search Input Bar */}
-      <View style={[styles.header, { backgroundColor: colors.card, borderBottomColor: colors.cardBorder }]}>
+    <View style={[styles.container, { backgroundColor: colors.gradientBottom }]}>
+      {/* Search Input Bar with notch padding */}
+      <View style={[styles.header, { backgroundColor: colors.card, borderBottomColor: colors.cardBorder, paddingTop: topPadding }]}>
         <View style={[styles.searchBox, { backgroundColor: colors.inputBg, borderColor: colors.inputBorder }]}>
           <Feather name="search" size={18} color={colors.textSecondary} />
           <TextInput
@@ -123,7 +128,7 @@ export function SearchScreen() {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -133,7 +138,7 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingBottom: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   searchBox: {
