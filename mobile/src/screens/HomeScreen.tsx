@@ -8,15 +8,14 @@ import {
   Image,
   TextInput,
   Modal,
-  useColorScheme,
-  Alert,
   Platform,
   StatusBar as RNStatusBar,
+  Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { darkColors, lightColors } from '../theme/colors';
+import { darkColors } from '../theme/colors';
 
 type Post = {
   id: string;
@@ -37,6 +36,7 @@ type Post = {
   isLiked: boolean;
   commentsCount: number;
   isBookmarked: boolean;
+  hashtags: string[];
   pnl?: {
     symbol: string;
     tradeType: string;
@@ -47,6 +47,13 @@ type Post = {
     pnlPct: number;
   };
 };
+
+const TICKER_ITEMS = [
+  { symbol: '$RELIANCE', price: '₹2,981.4', change: '-0.58%', isUp: false },
+  { symbol: '$HDFCBANK', price: '₹1,648.2', change: '+1.10%', isUp: true },
+  { symbol: '$VEDL', price: '₹462.5', change: '+4.10%', isUp: true },
+  { symbol: '$TATAMOTORS', price: '₹980.2', change: '+2.30%', isUp: true },
+];
 
 const INITIAL_POSTS: Post[] = [
   {
@@ -68,6 +75,7 @@ const INITIAL_POSTS: Post[] = [
     isLiked: false,
     commentsCount: 28,
     isBookmarked: false,
+    hashtags: ['#vedanta', '#SwingTrading', '#BreakoutAlert'],
     pnl: {
       symbol: 'VEDL',
       tradeType: 'EQUITY BUY',
@@ -97,6 +105,7 @@ const INITIAL_POSTS: Post[] = [
     isLiked: true,
     commentsCount: 42,
     isBookmarked: true,
+    hashtags: ['#NiftyOptions', '#GapAnalysis', '#ExpiryDay'],
     pnl: {
       symbol: 'NIFTY 24600 CE',
       tradeType: 'CALL (CE)',
@@ -110,16 +119,16 @@ const INITIAL_POSTS: Post[] = [
 ];
 
 export function HomeScreen() {
-  const scheme = useColorScheme();
-  const colors = scheme === 'dark' ? darkColors : lightColors;
+  const colors = darkColors; // Sleek Dark Theme Default matching web
   const insets = useSafeAreaInsets();
 
   const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
   const [isComposerVisible, setIsComposerVisible] = useState(false);
   const [newPostContent, setNewPostContent] = useState('');
   const [newStockSymbol, setNewStockSymbol] = useState('VEDL');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const topPadding = Math.max(insets.top, Platform.OS === 'android' ? (RNStatusBar.currentHeight || 24) : 0) + 6;
+  const topPadding = Math.max(insets.top, Platform.OS === 'android' ? (RNStatusBar.currentHeight || 24) : 0);
 
   const toggleLike = (id: string) => {
     setPosts(prev =>
@@ -171,6 +180,7 @@ export function HomeScreen() {
       isLiked: false,
       commentsCount: 0,
       isBookmarked: false,
+      hashtags: ['#Bullpost', '#LiveTrade'],
     };
     setPosts([newP, ...posts]);
     setNewPostContent('');
@@ -178,58 +188,77 @@ export function HomeScreen() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.gradientBottom }]}>
-      {/* Top App Header with proper notch/status bar spacing */}
-      <View
-        style={[
-          styles.header,
-          {
-            backgroundColor: colors.card,
-            borderBottomColor: colors.cardBorder,
-            paddingTop: topPadding,
-          },
-        ]}
-      >
-        <View style={styles.brandRow}>
-          <LinearGradient colors={['#2563EB', '#3B82F6']} style={styles.logoBadge}>
-            <Feather name="trending-up" size={16} color="#fff" />
-          </LinearGradient>
-          <Text style={[styles.brandText, { color: colors.textPrimary }]}>Bullpost</Text>
+    <View style={[styles.container, { backgroundColor: colors.pageBg }]}>
+      
+      {/* 1. Top Live Ticker Marquee */}
+      <View style={[styles.tickerBar, { paddingTop: topPadding + 4 }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tickerScroll}>
+          {TICKER_ITEMS.map((item, idx) => (
+            <View key={idx} style={styles.tickerItem}>
+              <Text style={styles.tickerSymbol}>{item.symbol}</Text>
+              <Text style={styles.tickerPrice}>{item.price}</Text>
+              <Text style={[styles.tickerChange, { color: item.isUp ? '#10B981' : '#EF4444' }]}>
+                {item.isUp ? '↗' : '↘'}{item.change}
+              </Text>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* 2. App Header with Search Pill & Notification */}
+      <View style={[styles.header, { backgroundColor: colors.pageBg, borderBottomColor: colors.cardBorder }]}>
+        <LinearGradient colors={['#2563EB', '#3B82F6']} style={styles.logoBadge}>
+          <Feather name="trending-up" size={16} color="#fff" />
+        </LinearGradient>
+
+        {/* Search Pill */}
+        <View style={[styles.searchPill, { backgroundColor: colors.inputBg, borderColor: colors.inputBorder }]}>
+          <Feather name="search" size={15} color="#94A3B8" />
+          <TextInput
+            placeholder="Search traders (@username), stocks..."
+            placeholderTextColor="#64748B"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            style={[styles.searchInput, { color: colors.textPrimary }]}
+          />
         </View>
 
+        {/* Notification Bell with Badge */}
         <Pressable 
-          onPress={() => Alert.alert('Notifications', 'No new unread market alerts.')}
+          onPress={() => Alert.alert('Notifications', '2 new trader breakout alerts.')}
           style={[styles.iconButton, { backgroundColor: colors.inputBg, borderColor: colors.cardBorder }]}
         >
-          <Feather name="bell" size={18} color={colors.textPrimary} />
-          <View style={styles.notificationDot} />
+          <Feather name="bell" size={17} color={colors.textPrimary} />
+          <View style={styles.notificationBadge}>
+            <Text style={styles.badgeNum}>2</Text>
+          </View>
         </Pressable>
       </View>
 
-      {/* Main Feed Scroll */}
+      {/* 3. Main Feed Scroll */}
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         
         {/* Quick Post Prompt Card */}
         <Pressable
           onPress={() => setIsComposerVisible(true)}
-          style={[styles.card, { backgroundColor: colors.card, borderColor: colors.cardBorder }]}
+          style={[styles.quickCard, { backgroundColor: colors.card, borderColor: colors.cardBorder }]}
         >
           <View style={styles.promptRow}>
             <Image
               source={{ uri: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200' }}
               style={styles.userAvatarSmall}
             />
-            <Text style={[styles.promptText, { color: colors.textSecondary }]}>
-              Share trade setup or verified P&L...
+            <Text numberOfLines={1} style={[styles.promptText, { color: '#94A3B8' }]}>
+              Share your latest trade set...
             </Text>
             <View style={styles.postBtnPill}>
-              <Feather name="plus" size={14} color="#fff" />
+              <Feather name="plus-circle" size={14} color="#fff" />
               <Text style={styles.postBtnText}>Post</Text>
             </View>
           </View>
         </Pressable>
 
-        {/* Posts Stream */}
+        {/* Post Cards Feed */}
         {posts.map(post => (
           <View
             key={post.id}
@@ -244,13 +273,14 @@ export function HomeScreen() {
                     <Text style={[styles.authorName, { color: colors.textPrimary }]}>{post.author.name}</Text>
                     {post.author.verified && (
                       <View style={styles.checkBadge}>
-                        <Feather name="check" size={10} color="#fff" />
+                        <Feather name="check" size={9} color="#fff" />
                       </View>
                     )}
                   </View>
-                  <Text style={[styles.handleText, { color: colors.textSecondary }]}>
+                  <Text style={[styles.handleText, { color: '#94A3B8' }]}>
                     @{post.author.username} • <Text style={styles.winRateText}>+{post.author.winRate}% Win</Text>
                   </Text>
+                  <Text style={styles.timeAgo}>{post.createdAt}</Text>
                 </View>
               </View>
 
@@ -258,61 +288,66 @@ export function HomeScreen() {
                 onPress={() => toggleFollow(post.id)}
                 style={[
                   styles.followBtn,
-                  post.author.isFollowing
-                    ? { backgroundColor: colors.inputBg, borderColor: colors.cardBorder }
-                    : { backgroundColor: '#EFF6FF', borderColor: '#BFDBFE' },
+                  { backgroundColor: post.author.isFollowing ? '#1E293B' : '#1E293B', borderColor: '#334155' },
                 ]}
               >
-                <Text
-                  style={[
-                    styles.followBtnText,
-                    { color: post.author.isFollowing ? colors.textSecondary : '#2563EB' },
-                  ]}
-                >
-                  {post.author.isFollowing ? 'Following' : '+ Follow'}
-                </Text>
+                <Feather
+                  name={post.author.isFollowing ? 'user-check' : 'user-plus'}
+                  size={14}
+                  color={post.author.isFollowing ? '#60A5FA' : '#94A3B8'}
+                />
               </Pressable>
             </View>
 
-            {/* Badges: Stock & Sentiment */}
+            {/* Badges Row matching Web: Stock, Sentiment, PNL, Disclaimer */}
             <View style={styles.badgeRow}>
-              <View style={[styles.stockPill, { backgroundColor: colors.inputBg, borderColor: colors.cardBorder }]}>
-                <Feather name="trending-up" size={12} color="#2563EB" />
-                <Text style={[styles.stockText, { color: colors.textPrimary }]}>
-                  ${post.targetStock} ({post.stockChange > 0 ? '+' : ''}{post.stockChange}%)
+              <View style={[styles.badgePill, { backgroundColor: colors.badgeBg, borderColor: colors.badgeBorder }]}>
+                <Feather name="trending-up" size={11} color="#60A5FA" />
+                <Text style={[styles.badgeText, { color: '#60A5FA' }]}>
+                  ${post.targetStock} (+{post.stockChange}%)
                 </Text>
               </View>
 
-              <View
-                style={[
-                  styles.sentimentPill,
-                  { backgroundColor: post.sentiment === 'bullish' ? '#ECFDF5' : '#FEF2F2' },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.sentimentText,
-                    { color: post.sentiment === 'bullish' ? '#059669' : '#DC2626' },
-                  ]}
-                >
+              <View style={[styles.badgePill, { backgroundColor: '#064E3B', borderColor: '#065F46' }]}>
+                <Feather name="trending-up" size={11} color="#10B981" />
+                <Text style={[styles.badgeText, { color: '#10B981' }]}>
                   {post.sentiment.toUpperCase()}
                 </Text>
               </View>
+
+              {post.pnl && (
+                <View style={[styles.badgePill, { backgroundColor: colors.badgeBg, borderColor: colors.badgeBorder }]}>
+                  <Text style={[styles.badgeText, { color: '#94A3B8' }]}>PNL</Text>
+                </View>
+              )}
+
+              <Pressable 
+                onPress={() => Alert.alert('Disclaimer', 'Past performance does not guarantee future returns. Educational and verified trade sharing.')}
+                style={[styles.badgePill, { backgroundColor: '#451A03', borderColor: '#78350F' }]}
+              >
+                <Feather name="alert-triangle" size={11} color="#F59E0B" />
+                <Text style={[styles.badgeText, { color: '#F59E0B' }]}>Disclaimer</Text>
+              </Pressable>
             </View>
 
             {/* Content Body */}
-            <Text style={[styles.postContent, { color: colors.textPrimary }]}>{post.content}</Text>
+            <Text style={[styles.postContent, { color: '#F8FAFC' }]}>{post.content}</Text>
+
+            {/* Hashtags */}
+            <View style={styles.hashtagsRow}>
+              {post.hashtags.map(h => (
+                <Text key={h} style={styles.hashtagText}>{h} </Text>
+              ))}
+            </View>
 
             {/* Realized P&L Proof Graphic Card */}
             {post.pnl && (
-              <View
-                style={[
-                  styles.pnlCard,
-                  { backgroundColor: post.pnl.pnlAmount >= 0 ? '#F0FDF4' : '#FEF2F2' },
-                ]}
-              >
+              <View style={[styles.pnlCard, { backgroundColor: '#061D15', borderColor: '#047857' }]}>
                 <View style={styles.pnlHeader}>
-                  <Text style={styles.pnlSymbol}>${post.pnl.symbol}</Text>
+                  <Text style={[styles.pnlSymbol, { color: '#F8FAFC' }]}>${post.pnl.symbol}</Text>
+                  <View style={styles.pnlTypePill}>
+                    <Text style={styles.pnlTypeText}>{post.pnl.tradeType}</Text>
+                  </View>
                   <View style={styles.verifiedPill}>
                     <Text style={styles.verifiedPillText}>VERIFIED P&L</Text>
                   </View>
@@ -333,7 +368,7 @@ export function HomeScreen() {
                   </View>
                   <View style={styles.pnlCol}>
                     <Text style={styles.pnlLabel}>RETURN</Text>
-                    <Text style={[styles.pnlVal, { color: '#059669', fontWeight: '900' }]}>
+                    <Text style={[styles.pnlVal, { color: '#10B981', fontWeight: '900' }]}>
                       +{post.pnl.pnlPct}%
                     </Text>
                   </View>
@@ -353,35 +388,30 @@ export function HomeScreen() {
                 <Ionicons
                   name={post.isLiked ? 'heart' : 'heart-outline'}
                   size={18}
-                  color={post.isLiked ? '#EF4444' : colors.textSecondary}
+                  color={post.isLiked ? '#EF4444' : '#94A3B8'}
                 />
-                <Text
-                  style={[
-                    styles.actionCount,
-                    { color: post.isLiked ? '#EF4444' : colors.textSecondary },
-                  ]}
-                >
+                <Text style={[styles.actionCount, { color: post.isLiked ? '#EF4444' : '#94A3B8' }]}>
                   {post.likesCount}
                 </Text>
               </Pressable>
 
-              {/* Comment */}
+              {/* Comment (Icon + count only) */}
               <Pressable
-                onPress={() => Alert.alert('Comments', `${post.commentsCount} comments on this trade.`)}
+                onPress={() => Alert.alert('Comments', `${post.commentsCount} trader comments on this post.`)}
                 style={styles.actionBtn}
               >
-                <Feather name="message-circle" size={17} color={colors.textSecondary} />
-                <Text style={[styles.actionCount, { color: colors.textSecondary }]}>
+                <Feather name="message-circle" size={17} color="#94A3B8" />
+                <Text style={[styles.actionCount, { color: '#94A3B8' }]}>
                   {post.commentsCount}
                 </Text>
               </Pressable>
 
               {/* Share */}
               <Pressable
-                onPress={() => Alert.alert('Share', 'Link copied to clipboard!')}
+                onPress={() => Alert.alert('Share', 'Post link copied to clipboard!')}
                 style={styles.actionBtn}
               >
-                <Feather name="share-2" size={17} color={colors.textSecondary} />
+                <Feather name="share-2" size={17} color="#94A3B8" />
               </Pressable>
 
               {/* Bookmark */}
@@ -396,7 +426,7 @@ export function HomeScreen() {
                 <Ionicons
                   name={post.isBookmarked ? 'bookmark' : 'bookmark-outline'}
                   size={17}
-                  color={post.isBookmarked ? '#2563EB' : colors.textSecondary}
+                  color={post.isBookmarked ? '#60A5FA' : '#94A3B8'}
                 />
               </Pressable>
             </View>
@@ -444,65 +474,104 @@ export function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  container: { flex: 1 },
+  tickerBar: {
+    backgroundColor: '#070A12',
+    paddingBottom: 6,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#1F2937',
+  },
+  tickerScroll: {
+    paddingHorizontal: 12,
+    gap: 16,
+    alignItems: 'center',
+  },
+  tickerItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  tickerSymbol: {
+    color: '#60A5FA',
+    fontSize: 11,
+    fontWeight: '900',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+  },
+  tickerPrice: {
+    color: '#F8FAFC',
+    fontSize: 11,
+    fontWeight: '800',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+  },
+  tickerChange: {
+    fontSize: 11,
+    fontWeight: '800',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingBottom: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  brandRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+    gap: 10,
   },
   logoBadge: {
-    width: 32,
-    height: 32,
-    borderRadius: 10,
+    width: 34,
+    height: 34,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  brandText: {
-    fontSize: 20,
-    fontWeight: '900',
-    letterSpacing: -0.5,
+  searchPill: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 20,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    gap: 6,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 12,
+    fontWeight: '600',
   },
   iconButton: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
     position: 'relative',
   },
-  notificationDot: {
+  notificationBadge: {
     position: 'absolute',
-    top: 8,
-    right: 9,
-    width: 7,
-    height: 7,
-    borderRadius: 4,
+    top: -2,
+    right: -2,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
     backgroundColor: '#2563EB',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeNum: {
+    color: '#fff',
+    fontSize: 9,
+    fontWeight: '900',
   },
   scrollContent: {
-    padding: 16,
-    gap: 16,
-    paddingBottom: 40,
+    padding: 14,
+    gap: 14,
+    paddingBottom: 70,
   },
-  card: {
+  quickCard: {
     borderRadius: 24,
     borderWidth: 1,
-    padding: 14,
-    shadowColor: '#000',
-    shadowOpacity: 0.04,
-    shadowRadius: 10,
-    elevation: 2,
+    padding: 12,
   },
   promptRow: {
     flexDirection: 'row',
@@ -510,9 +579,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   userAvatarSmall: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
   },
   promptText: {
     flex: 1,
@@ -524,7 +593,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
     backgroundColor: '#2563EB',
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 20,
   },
@@ -538,14 +607,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 16,
     gap: 12,
-    shadowColor: '#000',
-    shadowOpacity: 0.04,
-    shadowRadius: 10,
-    elevation: 2,
   },
   authorRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
   },
   authorInfo: {
@@ -554,9 +619,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
   },
   nameVerifiedRow: {
     flexDirection: 'row',
@@ -578,78 +643,95 @@ const styles = StyleSheet.create({
   handleText: {
     fontSize: 11,
     fontWeight: '600',
+    marginTop: 1,
   },
   winRateText: {
-    color: '#059669',
+    color: '#10B981',
     fontWeight: '800',
+  },
+  timeAgo: {
+    fontSize: 10,
+    color: '#64748B',
+    marginTop: 1,
   },
   followBtn: {
-    paddingHorizontal: 12,
-    paddingVertical: 5,
+    width: 32,
+    height: 32,
     borderRadius: 16,
     borderWidth: 1,
-  },
-  followBtnText: {
-    fontSize: 11,
-    fontWeight: '800',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   badgeRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 6,
+    flexWrap: 'wrap',
   },
-  stockPill: {
+  badgePill: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 14,
-    borderWidth: 1,
-  },
-  stockText: {
-    fontSize: 11,
-    fontWeight: '800',
-  },
-  sentimentPill: {
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
+    borderWidth: 1,
   },
-  sentimentText: {
+  badgeText: {
     fontSize: 10,
     fontWeight: '900',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
   postContent: {
     fontSize: 13,
     lineHeight: 19,
     fontWeight: '500',
   },
+  hashtagsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  hashtagText: {
+    color: '#60A5FA',
+    fontSize: 12,
+    fontWeight: '700',
+  },
   pnlCard: {
     borderRadius: 16,
     padding: 12,
     borderWidth: 1,
-    borderColor: 'rgba(5, 150, 105, 0.2)',
     gap: 8,
   },
   pnlHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: 6,
   },
   pnlSymbol: {
     fontSize: 12,
     fontWeight: '900',
-    color: '#0F172A',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
-  verifiedPill: {
-    backgroundColor: '#059669',
+  pnlTypePill: {
+    backgroundColor: '#064E3B',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 6,
   },
+  pnlTypeText: {
+    color: '#10B981',
+    fontSize: 9,
+    fontWeight: '800',
+  },
+  verifiedPill: {
+    backgroundColor: '#10B981',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+    marginLeft: 'auto',
+  },
   verifiedPillText: {
-    color: '#fff',
+    color: '#000',
     fontSize: 9,
     fontWeight: '900',
   },
@@ -661,32 +743,34 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   pnlLabel: {
-    fontSize: 9,
-    color: '#64748B',
+    fontSize: 8,
+    color: '#94A3B8',
     fontWeight: '700',
   },
   pnlVal: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#0F172A',
+    color: '#F8FAFC',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
   pnlFooter: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(5, 150, 105, 0.2)',
+    borderTopColor: 'rgba(16, 185, 129, 0.3)',
     paddingTop: 6,
   },
   pnlTotalLabel: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#64748B',
+    color: '#94A3B8',
   },
   pnlTotalVal: {
     fontSize: 14,
     fontWeight: '900',
-    color: '#059669',
+    color: '#10B981',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
   socialRow: {
     flexDirection: 'row',
@@ -699,7 +783,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    paddingHorizontal: 8,
+    paddingHorizontal: 6,
     paddingVertical: 4,
   },
   actionCount: {
@@ -708,7 +792,7 @@ const styles = StyleSheet.create({
   },
   modalBackdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
     justifyContent: 'flex-end',
   },
   composerModal: {
