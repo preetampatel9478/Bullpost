@@ -3,7 +3,7 @@ import { Post } from '../types';
 import { useApp } from '../context/AppContext';
 import { 
   Heart, 
-  MessageSquare, 
+  MessageCircle, 
   Share2, 
   Bookmark, 
   Flame, 
@@ -266,9 +266,14 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
         {/* Comments Toggle */}
         <button
           onClick={() => setShowComments(!showComments)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-colors ${
+            showComments
+              ? 'text-[#2563EB] dark:text-[#60A5FA] font-bold bg-blue-50 dark:bg-blue-600/20'
+              : 'hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-[#2563EB] dark:hover:text-[#60A5FA]'
+          }`}
+          title="Comments"
         >
-          <MessageSquare className="w-4 h-4 text-[#2563EB] dark:text-[#60A5FA]" />
+          <MessageCircle className={`w-4 h-4 ${showComments ? 'stroke-[2.5] fill-[#2563EB]/20 dark:fill-[#60A5FA]/20' : ''}`} />
           <span>{post.commentsCount} Comments</span>
         </button>
 
