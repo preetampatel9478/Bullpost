@@ -69,7 +69,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [isComposerOpen, setIsComposerOpen] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isSettingsDrawerOpen, setIsSettingsDrawerOpen] = useState<boolean>(false);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  
+  // Default to true so home screen opens immediately on launch
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    const saved = localStorage.getItem('bullpost_auth');
+    return saved !== null ? saved === 'true' : true;
+  });
+
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filterHashtag, setFilterHashtag] = useState<string | null>(null);
 
@@ -85,6 +91,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
     localStorage.setItem('bullpost_theme', theme);
   }, [theme]);
+
+  // Sync auth state
+  useEffect(() => {
+    localStorage.setItem('bullpost_auth', String(isAuthenticated));
+  }, [isAuthenticated]);
 
   const toggleTheme = () => {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
