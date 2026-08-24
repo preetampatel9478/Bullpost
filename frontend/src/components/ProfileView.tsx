@@ -6,14 +6,14 @@ import {
   UserPlus, 
   UserCheck, 
   PlusCircle, 
-  PieChart, 
   Settings, 
   Moon, 
   Sun, 
   Globe, 
   Bell, 
   LogOut, 
-  X
+  X,
+  FileText
 } from 'lucide-react';
 
 export const ProfileView: React.FC = () => {
@@ -30,14 +30,12 @@ export const ProfileView: React.FC = () => {
     setIsSettingsDrawerOpen
   } = useApp();
   
-  const [profileTab, setProfileTab] = useState<'posts' | 'liked' | 'stats'>('posts');
   const [language, setLanguage] = useState<'en' | 'hi' | 'gu' | 'mr'>('en');
   const [pushNotifications, setPushNotifications] = useState(true);
   const [pnlAlerts, setPnlAlerts] = useState(true);
 
   const isOwnProfile = selectedProfileUser.id === currentUser.id;
   const userPosts = posts.filter(p => p.author.id === selectedProfileUser.id);
-  const likedPosts = posts.filter(p => p.isLiked);
 
   return (
     <div className="space-y-6 animate-fadeIn relative">
@@ -141,78 +139,24 @@ export const ProfileView: React.FC = () => {
 
       </div>
 
-      {/* Profile Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800 text-xs sm:text-sm font-bold overflow-x-auto gap-2">
-        {[
-          { id: 'posts', label: `Posts & P&L (${userPosts.length})` },
-          { id: 'liked', label: `Liked Posts (${likedPosts.length})` },
-          { id: 'stats', label: 'Trade Performance' }
-        ].map(t => (
-          <button
-            key={t.id}
-            onClick={() => setProfileTab(t.id as any)}
-            className={`px-5 py-3 border-b-2 whitespace-nowrap transition-all ${
-              profileTab === t.id
-                ? 'border-[#2563EB] dark:border-[#60A5FA] text-[#2563EB] dark:text-[#60A5FA] font-black'
-                : 'border-transparent text-slate-400 hover:text-slate-700 dark:hover:text-white'
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
+      {/* Posts Header */}
+      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 pt-2">
+        <h3 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
+          <FileText className="w-5 h-5 text-[#2563EB] dark:text-[#60A5FA]" />
+          Posts & Verified P&L ({userPosts.length})
+        </h3>
       </div>
 
-      {/* Tab Content */}
-      {profileTab === 'posts' && (
-        <div className="space-y-4">
-          {userPosts.length === 0 ? (
-            <div className="glass-card p-10 text-center text-slate-400 text-sm font-medium border border-slate-200 dark:border-slate-800">
-              No trade posts created by @{selectedProfileUser.username} yet.
-            </div>
-          ) : (
-            userPosts.map(p => <PostCard key={p.id} post={p} />)
-          )}
-        </div>
-      )}
-
-      {profileTab === 'liked' && (
-        <div className="space-y-4">
-          {likedPosts.length === 0 ? (
-            <div className="glass-card p-10 text-center text-slate-400 text-sm font-medium border border-slate-200 dark:border-slate-800">
-              No liked posts yet.
-            </div>
-          ) : (
-            likedPosts.map(p => <PostCard key={p.id} post={p} />)
-          )}
-        </div>
-      )}
-
-      {profileTab === 'stats' && (
-        <div className="glass-card p-6 space-y-4 font-mono border border-slate-200 dark:border-slate-800">
-          <h3 className="font-black text-slate-900 dark:text-white text-base flex items-center gap-2">
-            <PieChart className="w-5 h-5 text-[#2563EB] dark:text-[#60A5FA]" /> Historical Trading Metrics & Risk Index
-          </h3>
-          
-          <div className="space-y-3 text-xs text-slate-700 dark:text-slate-300">
-            <div className="flex justify-between border-b border-slate-100 dark:border-slate-800 pb-2.5">
-              <span>Avg Risk : Reward Ratio</span>
-              <span className="font-bold text-emerald-600 dark:text-emerald-400">1 : 2.8</span>
-            </div>
-            <div className="flex justify-between border-b border-slate-100 dark:border-slate-800 pb-2.5">
-              <span>Max Consecutive Wins</span>
-              <span className="font-bold text-emerald-600 dark:text-emerald-400">12 Trades</span>
-            </div>
-            <div className="flex justify-between border-b border-slate-100 dark:border-slate-800 pb-2.5">
-              <span>Preferred Strategy</span>
-              <span className="font-bold text-slate-900 dark:text-white">Nifty Options (CE/PE), Stock Swing (Vedanta, Tata Motors)</span>
-            </div>
-            <div className="flex justify-between">
-              <span>SEBI Risk Category Compliance</span>
-              <span className="font-bold text-[#2563EB] dark:text-[#60A5FA]">Strict Stop-Loss Verified</span>
-            </div>
+      {/* User Posts List */}
+      <div className="space-y-4">
+        {userPosts.length === 0 ? (
+          <div className="glass-card p-10 text-center text-slate-400 text-sm font-medium border border-slate-200 dark:border-slate-800">
+            No trade posts created by @{selectedProfileUser.username} yet.
           </div>
-        </div>
-      )}
+        ) : (
+          userPosts.map(p => <PostCard key={p.id} post={p} />)
+        )}
+      </div>
 
       {/* Settings Drawer */}
       {isSettingsDrawerOpen && (
