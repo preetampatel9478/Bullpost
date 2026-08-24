@@ -274,7 +274,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
           title="Comments"
         >
           <MessageCircle className={`w-4 h-4 ${showComments ? 'stroke-[2.5] fill-[#2563EB]/20 dark:fill-[#60A5FA]/20' : ''}`} />
-          <span>{post.commentsCount} Comments</span>
+          <span>{post.commentsCount}</span>
         </button>
 
         {/* Share */}
